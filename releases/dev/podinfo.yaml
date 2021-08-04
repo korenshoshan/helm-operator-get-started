@@ -16,7 +16,7 @@ spec:
   values:
     image:
       repository: gcr.io/kinetic-decoder-320516/echo-v2
-      tag: dev-1.2.2
+      tag: dev-1.2.3
     replicaCount: 1
     hpa:
       enabled: false
