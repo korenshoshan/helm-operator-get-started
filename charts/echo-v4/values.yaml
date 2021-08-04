@@ -84,6 +84,9 @@ cronjob:
     imagePullPolicy: IfNotPresent
   restartPolicy: Never
 
+clusterdomain: cluster.local
+
+
 mongodb: ##for subchart
   architecture: replicaset
   replicaCount: 3
