@@ -54,7 +54,7 @@ ingress:
   # namespace: default
   
   rules:
-    host: korenlios.ml
+    host: koren.world
     backend:
       port:
         number: 80
