@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configmap.name }}
+data:
+   #replace this vars in deployment(the app)
+  PORT: {{ .Values.configmap.port }}
+  LOGLEVEL: {{ .Values.configmap.loglevel }}
+  PERSIST: {{ .Values.configmap.persist }} 
+  DBNAME: {{ .Values.configmap.dbname }}
+    

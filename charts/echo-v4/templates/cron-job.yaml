@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Values.cronjob.name }}
+spec:
+  schedule: {{ .Values.cronjob.autoCleanPeriods | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{ .Values.cronjob.containers.name }}
+            image: {{ .Values.cronjob.containers.image }}
+            imagePullPolicy: {{ .Values.cronjob.containers.imagePullPolicy }}
+            envFrom:
+            - secretRef:
+                name: {{ .Values.echo_app.containers.nameSecret }}
+            command:
+              - mongo
+              - $(MONGODBURL) 
+              -  --eval
+              -  "db.echos.remove({})"
+          restartPolicy: {{ .Values.cronjob.restartPolicy }} 

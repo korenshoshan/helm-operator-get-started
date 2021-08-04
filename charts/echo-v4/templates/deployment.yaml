@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.echo_app.name }}
+  labels: 
+    app: {{ .Values.echo_app.labels.app }}
+spec:
+  replicas: {{ .Values.echo_app.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.echo_app.selector.matchLabels.app }}
+  template:
+    metadata:
+      name: {{ .Values.echo_app.template.metadata.name}}
+      labels:
+        app: {{ .Values.echo_app.selector.matchLabels.app }}
+    spec:
+      containers:
+        - name: {{ .Values.echo_app.containers.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" #avitaltamirdeveleap/echo
+          ports:
+          - containerPort: {{ .Values.echo_app.containers.containerPort }}
+      
+          envFrom:
+            - secretRef:
+                name: {{ .Values.echo_app.containers.nameSecret }}
+            - configMapRef:
+                name: {{ .Values.echo_app.containers.nameConfigmap }}
+          ##limit the container
+          resources:
+            requests:
+              memory: {{ .Values.echo_app.requests.memory }}
+              cpu: {{ .Values.echo_app.requests.cpu }} 
+            limits:
+              memory: {{ .Values.echo_app.limits.memory }}
+              cpu: {{ .Values.echo_app.limits.cpu }}
+          
+        
+

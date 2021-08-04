@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+spec:
+  selector:
+    app: {{ .Values.echo_app.selector.matchLabels.app }}
+  ports:
+    - protocol: {{ .Values.service.protocol }}
+      port: {{ .Values.service.port }} #cluster ip listens
+      targetPort: {{ .Values.service.targetPort }} #target port
+  type: {{ .Values.service.type }}

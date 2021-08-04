@@ -10,13 +10,13 @@ metadata:
 spec:
   releaseName: podinfo-dev
   chart:
-    git: git@github.com:fluxcd/helm-operator-get-started
-    path: charts/podinfo
+    git: git@github.com:korenshoshan/helm-operator-get-started.git
+    path: charts/echo-v4
     ref: master
   values:
     image:
-      repository: stefanprodan/podinfo
-      tag: dev-hdtwcel9
+      repository: gcr.io/kinetic-decoder-320516/echo-v2
+      tag: dev-1.2.2
     replicaCount: 1
     hpa:
       enabled: false

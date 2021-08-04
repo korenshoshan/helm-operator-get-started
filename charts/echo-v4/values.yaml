@@ -1,0 +1,102 @@
+
+image:
+  repository: gcr.io/kinetic-decoder-320516/echo-v2
+  tag: latest
+
+echo_app:
+  name: echo-deployment
+  labels: 
+    app: echo_app
+  spec:
+    replicas: 2
+  selector:
+    matchLabels:
+      app: my-echo-deploy-app
+  template:
+    metadata:
+      name: pod-echo-2
+  containers:
+    name: echo-container
+    containerPort: 3000
+    nameSecret: secret-uri-mongodb
+    nameConfigmap: config-map
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "450m"
+   
+
+configmap:
+  name: config-map
+  port: "\"3000\""
+  loglevel: "info"
+  persist: "\"true\""
+  dbname: "echo"
+
+secret:
+  name: secret-uri-mongodb
+  type: Opaque
+  mongodburl: bW9uZ29kYjovL2tvcmVuOnBhc3N3b3JkQGVjaG8tbW9uZ29kYi0wLmVjaG8tbW9uZ29kYi1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsLGVjaG8tbW9uZ29kYi0xLmVjaG8tbW9uZ29kYi1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsLGVjaG8tbW9uZ29kYi0yLmVjaG8tbW9uZ29kYi1oZWFkbGVzcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsOjI3MDE3L2VjaG8K
+## here the url works only with helm name - echo, otherwise you should decode it to your helm chart name 
+service:
+  name: my-service-cluster-ip
+  protocol: TCP
+  port: 80
+  targetPort: 3000
+  type: ClusterIP
+
+ingress:
+  annotations: 
+    kubernetes_io_ingress_class: "nginx"
+  name: nginx-ingress
+  # namespace: default
+  
+  rules:
+    host: korenlios.ml
+    backend:
+      port:
+        number: 80
+      path: /
+      pathType: Prefix
+  tls:
+    secretName: secret-tls
+
+clusterIssuer:
+  name: letsencrypt-cluster-issuer
+  email: koren.king@gmail.com
+  server: https://acme-v02.api.letsencrypt.org/directory
+  privateKeySecretRef:
+    name: issuer-account-key
+  class: nginx
+  group: cert-manager.io
+
+certificate: 
+  name: acme-cert
+
+cronjob:
+  name: cron-mongo
+  autoCleanPeriods: "0 0 * * *"
+  containers:
+    name: cron-cont
+    image: mongo:4.4.6
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+
+mongodb: ##for subchart
+  architecture: replicaset
+  replicaCount: 3
+  persistence:
+    storageClass: "standard"
+  auth:
+    rootPassword: password
+    password: password
+    database: echo
+    username: koren
+
+
+
+# cert-manager:
+#   clusterResourceNamespace: echo
+
